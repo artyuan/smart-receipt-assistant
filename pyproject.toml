@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "receipt-reader"
+version = "0.1.0"
+description = "A Streamlit app to upload and analyze supermarket invoices with a dashboard for spending insights."
+authors = ["Arthur Yuan"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+streamlit = "^1.44.1"
+pandas = "^2.2.3"
+plotly = "^6.0.1"
+sqlalchemy = "^2.0.40"
+psycopg2 = "^2.9.10"
+pydantic = "^2.11.3"
+langchain = "^0.3.24"
+langchain-core = "^0.3.56"
+langchain-community = "^0.3.22"
+langgraph = "^0.3.34"
+docling = "^2.31.0"
+langchain-openai = "^0.3.14"
+dotenv = "0.9.9"
+
+[build-system]
+requires = ["poetry-core>=2.1.2"]
+build-backend = "poetry.core.masonry.api"
