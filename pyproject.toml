@@ -23,6 +23,9 @@ docling = "^2.31.0"
 langchain-openai = "^0.3.14"
 dotenv = "0.9.9"
 
+[tool.poetry.dev-dependencies]
+pytest = "^8.3.5"
+
 [build-system]
 requires = ["poetry-core>=2.1.2"]
 build-backend = "poetry.core.masonry.api"

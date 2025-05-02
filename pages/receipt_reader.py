@@ -1,5 +1,5 @@
 import streamlit as st
-from src.postgres_sql import insert_sql_query
+from src.database import insert_sql_query
 from src.invoice_agent import build_graph
 from datetime import datetime
 from langchain_core.messages import HumanMessage
