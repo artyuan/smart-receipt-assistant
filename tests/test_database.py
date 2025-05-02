@@ -367,3 +367,93 @@ class TestDatabase(TestCase):
             with pytest.raises(RuntimeError):
                 load_invoice_data(mock_engine)
 
+
+# For pytest compatibility, use proper standalone functions
+@patch('psycopg2.connect')
+def test_create_postgres_database_success(mock_connect):
+    test_instance = TestDatabase()
+    test_instance.test_create_postgres_database_success(mock_connect)
+
+
+@patch('psycopg2.connect')
+def test_create_postgres_database_drop_error(mock_connect):
+    test_instance = TestDatabase()
+    test_instance.test_create_postgres_database_drop_error(mock_connect)
+
+
+@patch('psycopg2.connect')
+def test_create_postgres_database_create_error(mock_connect):
+    test_instance = TestDatabase()
+    test_instance.test_create_postgres_database_create_error(mock_connect)
+
+
+def test_execute_sql_success():
+    test_instance = TestDatabase()
+    test_instance.test_execute_sql_success()
+
+
+def test_execute_sql_error():
+    test_instance = TestDatabase()
+    test_instance.test_execute_sql_error()
+
+
+@patch('psycopg2.connect')
+def test_run_sql_commands_success(mock_connect):
+    test_instance = TestDatabase()
+    test_instance.test_run_sql_commands_success(mock_connect)
+
+
+@patch('psycopg2.connect')
+def test_run_sql_commands_connection_error(mock_connect):
+    test_instance = TestDatabase()
+    test_instance.test_run_sql_commands_connection_error(mock_connect)
+
+
+@patch('psycopg2.connect')
+def test_run_sql_commands_sql_error(mock_connect):
+    test_instance = TestDatabase()
+    test_instance.test_run_sql_commands_sql_error(mock_connect)
+
+
+def test_get_database_url():
+    test_instance = TestDatabase()
+    test_instance.test_get_database_url()
+
+
+def test_get_sql_database():
+    test_instance = TestDatabase()
+    test_instance.test_get_sql_database()
+
+
+def test_insert_sql_query_success():
+    test_instance = TestDatabase()
+    test_instance.test_insert_sql_query_success()
+
+
+def test_insert_sql_query_error():
+    test_instance = TestDatabase()
+    test_instance.test_insert_sql_query_error()
+
+
+def test_create_db_engine_success():
+    test_instance = TestDatabase()
+    test_instance.test_create_db_engine_success()
+
+
+def test_create_db_engine_error():
+    test_instance = TestDatabase()
+    test_instance.test_create_db_engine_error()
+
+
+def test_load_invoice_data_success():
+    test_instance = TestDatabase()
+    test_instance.test_load_invoice_data_success()
+
+
+def test_load_invoice_data_error():
+    test_instance = TestDatabase()
+    test_instance.test_load_invoice_data_error()
+
+
+if __name__ == '__main__':
+    pytest.main(['-v'])
