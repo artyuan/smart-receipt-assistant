@@ -1,5 +1,5 @@
 import streamlit as st
-from src.postgres_sql import create_db_engine, load_invoice_data
+from src.database import create_db_engine, load_invoice_data
 from src.dashboard_utils import date_range_filter, plot_unitary_prices, plot_total_spend, plot_price_comparison
 
 def main():

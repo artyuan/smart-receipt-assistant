@@ -3,7 +3,7 @@ from src.config import llm
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.messages import AIMessage, HumanMessage
-from src.postgres_sql import get_sql_database
+from src.database import get_sql_database
 from pydantic import BaseModel
 
 class QueryOutput(BaseModel):
