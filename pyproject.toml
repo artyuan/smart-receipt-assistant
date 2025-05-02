@@ -1,10 +1,11 @@
 [tool.poetry]
-name = "receipt-reader"
+name = "smart-receipt-assistant"
 version = "0.1.0"
 description = "A Streamlit app to upload and analyze supermarket invoices with a dashboard for spending insights."
 authors = ["Arthur Yuan"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -16,7 +17,7 @@ psycopg2 = "^2.9.10"
 pydantic = "^2.11.3"
 langchain = "^0.3.24"
 langchain-core = "^0.3.56"
-langchain-community = "^0.3.22"
+langchain-community = "0.3.21"
 langgraph = "^0.3.34"
 docling = "^2.31.0"
 langchain-openai = "^0.3.14"
