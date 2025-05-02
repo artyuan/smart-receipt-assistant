@@ -15,28 +15,20 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # ✅ updated
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4  # ✅ updated
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install Poetry
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
-        echo "export PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+        echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ better than editing $GITHUB_ENV
 
     - name: Install dependencies
-      run: |
-        poetry install --no-dev
+      run: poetry install
 
     - name: Run tests
-      run: |
-        poetry run pytest  # Running the tests using pytest
-
-    - name: Upload test results (optional)
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-results
-        path: tests/test_results.xml  # Adjust if you generate a report
+      run: poetry run pytest
