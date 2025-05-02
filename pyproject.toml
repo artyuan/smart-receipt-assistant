@@ -23,7 +23,7 @@ docling = "^2.31.0"
 langchain-openai = "^0.3.14"
 dotenv = "0.9.9"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
 
 [build-system]
