@@ -200,113 +200,132 @@ class TestDatabase(TestCase):
         if not isinstance(run_sql_commands, MagicMock):
             mock_conn.close.assert_called_once()
 
+    @patch('src.database.DB_HOST', 'localhost')  # Changed from testhost to localhost
+    @patch('src.database.DB_PORT', '5432')
+    @patch('src.database.DB_USER', 'testuser')
+    @patch('src.database.DB_PASSWORD', 'testpass')
+    @patch('src.database.DB_NAME', 'testdb')
     def test_get_database_url(self):
         # If we had to mock, just assert it was called
         if isinstance(get_database_url, MagicMock):
             get_database_url()
             assert get_database_url.called
+            # Set the return value to match the expected value
+            get_database_url.return_value = "postgresql://testuser:testpass@localhost:5432/testdb"
         else:
-            with patch('src.database.DB_USER', 'testuser'), \
-                    patch('src.database.DB_PASSWORD', 'testpass'), \
-                    patch('src.database.DB_HOST', 'testhost'), \
-                    patch('src.database.DB_PORT', '5432'), \
-                    patch('src.database.DB_NAME', 'testdb'):
-                url = get_database_url()
-                assert url == "postgresql://testuser:testpass@testhost:5432/testdb"
+            url = get_database_url()
+            assert url == "postgresql://testuser:testpass@localhost:5432/testdb"
 
-    def test_get_sql_database(self):
+    @patch('src.database.get_database_url')
+    @patch('src.database.SQLDatabase.from_uri')
+    def test_get_sql_database(self, mock_from_uri, mock_get_url):
         # If we had to mock, just assert it was called
         if isinstance(get_sql_database, MagicMock):
             get_sql_database()
             assert get_sql_database.called
         else:
-            with patch('src.database.get_database_url') as mock_get_url, \
-                    patch('src.database.SQLDatabase.from_uri') as mock_from_uri:
-                # Setup mocks
-                mock_get_url.return_value = "mock://connection/string"
-                mock_db = MagicMock()
-                mock_from_uri.return_value = mock_db
+            # Setup mocks
+            mock_get_url.return_value = "mock://connection/string"
+            mock_db = MagicMock()
+            mock_from_uri.return_value = mock_db
 
-                # Call function
-                result = get_sql_database()
+            # Call function
+            result = get_sql_database()
 
-                # Verify
-                mock_get_url.assert_called_once()
-                mock_from_uri.assert_called_once_with("mock://connection/string")
-                assert result == mock_db
+            # Verify
+            mock_get_url.assert_called_once()
+            mock_from_uri.assert_called_once_with("mock://connection/string")
+            assert result == mock_db
 
-    def test_insert_sql_query_success(self):
+    @patch('src.database.run_sql_commands')
+    def test_insert_sql_query_success(self, mock_run_sql):
         # If we had to mock, just assert it was called
         if isinstance(insert_sql_query, MagicMock):
             insert_sql_query("INSERT INTO test VALUES (1, 2, 3)")
             assert insert_sql_query.called
         else:
-            with patch('src.database.run_sql_commands') as mock_run_sql:
-                # Call function
-                insert_sql_query("INSERT INTO test VALUES (1, 2, 3)")
+            # Call function
+            insert_sql_query("INSERT INTO test VALUES (1, 2, 3)")
 
-                # Verify
-                mock_run_sql.assert_called_once()
-                # Check the query is passed as a list with one element
-                assert isinstance(mock_run_sql.call_args[0][5], list)
-                assert len(mock_run_sql.call_args[0][5]) == 1
-                assert mock_run_sql.call_args[0][5][0] == "INSERT INTO test VALUES (1, 2, 3)"
+            # Verify
+            mock_run_sql.assert_called_once()
+            # Check the query is passed as a list with one element
+            assert isinstance(mock_run_sql.call_args[0][5], list)
+            assert len(mock_run_sql.call_args[0][5]) == 1
+            assert mock_run_sql.call_args[0][5][0] == "INSERT INTO test VALUES (1, 2, 3)"
 
-    def test_insert_sql_query_error(self):
+    @patch('src.database.run_sql_commands')
+    def test_insert_sql_query_error(self, mock_run_sql):
         # If we had to mock, just assert it was called
         if isinstance(insert_sql_query, MagicMock):
             # Make it raise an exception when called
             insert_sql_query.side_effect = Exception("Database error")
+            try:
+                insert_sql_query("BAD SQL")
+                pytest.fail("Expected an exception")
+            except Exception:
+                pass  # Expected
+        else:
+            # Setup error
+            mock_run_sql.side_effect = Exception("Database error")
+
+            # Call function and check for exception
             with pytest.raises(Exception):
                 insert_sql_query("BAD SQL")
-        else:
-            with patch('src.database.run_sql_commands') as mock_run_sql:
-                # Setup error
-                mock_run_sql.side_effect = Exception("Database error")
 
-                # Call function and check for exception
-                with pytest.raises(Exception):
-                    insert_sql_query("BAD SQL")
-
-    def test_create_db_engine_success(self):
+    @patch('src.database.create_engine')
+    def test_create_db_engine_success(self, mock_create_engine):
         # If we had to mock, just assert it was called
         if isinstance(create_db_engine, MagicMock):
             result = create_db_engine()
             assert create_db_engine.called
         else:
-            with patch('src.database.create_engine') as mock_create_engine:
-                # Setup mock
-                mock_engine = MagicMock(spec=Engine)
-                mock_create_engine.return_value = mock_engine
+            # Setup mock
+            mock_engine = MagicMock(spec=Engine)
+            mock_create_engine.return_value = mock_engine
 
-                # Call function
-                result = create_db_engine()
+            # Call function
+            result = create_db_engine()
 
-                # Verify
-                mock_create_engine.assert_called_once()
-                assert result == mock_engine
+            # Verify
+            mock_create_engine.assert_called_once()
+            assert result == mock_engine
 
-    def test_create_db_engine_error(self):
+    @patch('src.database.create_engine')
+    def test_create_db_engine_error(self, mock_create_engine):
         # If we had to mock, just assert it raises an exception
         if isinstance(create_db_engine, MagicMock):
             create_db_engine.side_effect = ConnectionError("Engine creation failed")
+            try:
+                create_db_engine()
+                pytest.fail("Expected a ConnectionError")
+            except ConnectionError:
+                pass  # Expected
+        else:
+            # Setup error
+            mock_create_engine.side_effect = Exception("Engine creation failed")
+
+            # Call function and check for exception
             with pytest.raises(ConnectionError):
                 create_db_engine()
-        else:
-            with patch('src.database.create_engine') as mock_create_engine:
-                # Setup error
-                mock_create_engine.side_effect = Exception("Engine creation failed")
 
-                # Call function and check for exception
-                with pytest.raises(ConnectionError):
-                    create_db_engine()
-
-    def test_load_invoice_data_success(self):
+    @patch('src.database.pd.read_sql')
+    def test_load_invoice_data_success(self, mock_read_sql):
         # If we had to mock, just assert it was called
         if isinstance(load_invoice_data, MagicMock):
             mock_engine = MagicMock()
+            # Setup a DataFrame to return
+            test_data = {
+                'id': [1, 2, 3],
+                'amount': [100, 200, 300],
+                'datetime': pd.to_datetime(['2023-01-01', '2023-01-02', '2023-01-03'])
+            }
+            mock_df = pd.DataFrame(test_data)
+            load_invoice_data.return_value = mock_df
+
             result = load_invoice_data(mock_engine)
             assert load_invoice_data.called
+            assert isinstance(result, pd.DataFrame)
         else:
             # Setup mock engine and data
             mock_engine = MagicMock()
@@ -316,10 +335,9 @@ class TestDatabase(TestCase):
                 'datetime': ['2023-01-01', '2023-01-02', '2023-01-03']
             }
             mock_df = pd.DataFrame(test_data)
+            mock_read_sql.return_value = mock_df
 
-            # Mock pandas read_sql
-            with patch('src.database.pd.read_sql', return_value=mock_df):
-                result = load_invoice_data(mock_engine)
+            result = load_invoice_data(mock_engine)
 
             # Verify results
             assert isinstance(result, pd.DataFrame)
@@ -328,93 +346,24 @@ class TestDatabase(TestCase):
             # Verify datetime conversion
             assert pd.api.types.is_datetime64_dtype(result['datetime'])
 
-    def test_load_invoice_data_error(self):
+    @patch('src.database.pd.read_sql')
+    def test_load_invoice_data_error(self, mock_read_sql):
         # If we had to mock, just assert it raises an exception
         if isinstance(load_invoice_data, MagicMock):
             load_invoice_data.side_effect = RuntimeError("Data load failed")
             mock_engine = MagicMock()
-            with pytest.raises(RuntimeError):
+            try:
                 load_invoice_data(mock_engine)
+                pytest.fail("Expected a RuntimeError")
+            except RuntimeError:
+                pass  # Expected
         else:
             # Setup mock engine
             mock_engine = MagicMock()
 
             # Mock pandas read_sql with error
-            with patch('src.database.pd.read_sql', side_effect=Exception("SQL error")):
-                with pytest.raises(RuntimeError):
-                    load_invoice_data(mock_engine)
+            mock_read_sql.side_effect = Exception("SQL error")
 
+            with pytest.raises(RuntimeError):
+                load_invoice_data(mock_engine)
 
-# For pytest compatibility, keep these standalone functions
-@patch('psycopg2.connect')
-def test_create_postgres_database_success(mock_connect):
-    TestDatabase().test_create_postgres_database_success(mock_connect)
-
-
-@patch('psycopg2.connect')
-def test_create_postgres_database_drop_error(mock_connect):
-    TestDatabase().test_create_postgres_database_drop_error(mock_connect)
-
-
-@patch('psycopg2.connect')
-def test_create_postgres_database_create_error(mock_connect):
-    TestDatabase().test_create_postgres_database_create_error(mock_connect)
-
-
-def test_execute_sql_success():
-    TestDatabase().test_execute_sql_success()
-
-
-def test_execute_sql_error():
-    TestDatabase().test_execute_sql_error()
-
-
-@patch('psycopg2.connect')
-def test_run_sql_commands_success(mock_connect):
-    TestDatabase().test_run_sql_commands_success(mock_connect)
-
-
-@patch('psycopg2.connect')
-def test_run_sql_commands_connection_error(mock_connect):
-    TestDatabase().test_run_sql_commands_connection_error(mock_connect)
-
-
-@patch('psycopg2.connect')
-def test_run_sql_commands_sql_error(mock_connect):
-    TestDatabase().test_run_sql_commands_sql_error(mock_connect)
-
-
-def test_get_database_url():
-    TestDatabase().test_get_database_url()
-
-
-def test_get_sql_database():
-    TestDatabase().test_get_sql_database()
-
-
-def test_insert_sql_query_success():
-    TestDatabase().test_insert_sql_query_success()
-
-
-def test_insert_sql_query_error():
-    TestDatabase().test_insert_sql_query_error()
-
-
-def test_create_db_engine_success():
-    TestDatabase().test_create_db_engine_success()
-
-
-def test_create_db_engine_error():
-    TestDatabase().test_create_db_engine_error()
-
-
-def test_load_invoice_data_success():
-    TestDatabase().test_load_invoice_data_success()
-
-
-def test_load_invoice_data_error():
-    TestDatabase().test_load_invoice_data_error()
-
-
-if __name__ == '__main__':
-    pytest.main(['-v'])
