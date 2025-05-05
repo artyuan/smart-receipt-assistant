@@ -116,6 +116,7 @@ def load_invoice_data(engine) -> pd.DataFrame:
         raise RuntimeError("Failed to load or parse data from the database") from e
 
 if __name__ == '__main__':
+    # Create database
     create_postgres_database(DB_NAME, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD)
     run_sql_commands(DB_NAME, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, sql_commands)
 

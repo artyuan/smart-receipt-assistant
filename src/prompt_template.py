@@ -12,6 +12,7 @@ invoice_prompt = """
         - VL UN R$ (valor unitário)
         - VL ITEM R$ (valor total do item)
         - PRODUTO (nome genérico, como Leite, Detergente, Frango, etc.)
+        - PRODUTO MARCA: nome genérico mais a marca, como Leite Italac, Detergente Ypê, Frango Sadia. Quando for produto natural, como alho, cebola, uva, manter apenas o nome.
         - VOLUME (ex: "1L", "500ML", "1KG"; se não houver, usar NULL)
         - CATEGORIA (categoria do produto)
 
@@ -26,15 +27,15 @@ invoice_prompt = """
 
         **Saída esperada**
         **Exemplo 1**
-        INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, volume, category) VALUES
-        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'LTE ITALAC ZERO 1L',3.00, 'Un', 5.89, 17.60, 'Leite', '1L', 'Laticínios'),
-        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'P QJ SIBERI 1kg TRAD',1.00, 'PC', 14.10, 14.10, 'Pão de Queijo', '1KG', 'Padaria e Confeitaria'),
-        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'SASSAMI SADIA 1kg',4.00, 'PC', 20.90, 83.60, 'Frango' , '1KG', 'Carnes e Aves');
+        INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, full_product_name, volume, category) VALUES
+        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'LTE ITALAC ZERO 1L',3.00, 'Un', 5.89, 17.60, 'Leite', 'Leite Italac,'1L', 'Laticínios'),
+        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'P QJ SIBERI 1kg TRAD',1.00, 'PC', 14.10, 14.10, 'Pão de Queijo', 'Pão de Queijo Siberi','1KG', 'Padaria e Confeitaria'),
+        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'SASSAMI SADIA 1kg',4.00, 'PC', 20.90, 83.60, 'Frango', 'Frango Sadia','1KG', 'Carnes e Aves');
         
         **Exemplo 2**
-        INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, volume, category) VALUES
-        (35250447508411271427651040001874681561004444,CIA BRASILEIRA DE DISTRIBUICAO,01/03/2025,' CERV BLUE MOON 350ML',1.00, 'Un', 8.99, 8.99, 'Cerveja', '350ML', 'Bebidas'),
-        (35250447508411271427651040001874681561004444,CIA BRASILEIRA DE DISTRIBUICAO,01/03/2025,'ORFEU TM INT 250G ',1.00, 'Un', 38.99, 38.99, 'Café', '250G', 'Bebidas');
+        INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, full_product_name, volume, category) VALUES
+        (35250447508411271427651040001874681561004444,CIA BRASILEIRA DE DISTRIBUICAO,01/03/2025,'CERV BLUE MOON 350ML',1.00, 'Un', 8.99, 8.99, 'Cerveja', 'Cerveja Blue Moon','350ML', 'Bebidas'),
+        (35250447508411271427651040001874681561004444,CIA BRASILEIRA DE DISTRIBUICAO,01/03/2025,'ORFEU TM INT 250G ',1.00, 'Un', 38.99, 38.99, 'Cafe', 'Cafe Orfeu','250G', 'Bebidas');
 
     Cupom fiscal:
     {receipt}

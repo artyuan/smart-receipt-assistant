@@ -10,6 +10,7 @@ sql_commands = [
         unitary_value DECIMAL(10,2) NOT NULL,
         total_value DECIMAL(10,2) NOT NULL,
         product TEXT NOT NULL,
+        full_product_name TEXT NOT NULL,
         volume VARCHAR(10),
         category TEXT NOT NULL
     );
