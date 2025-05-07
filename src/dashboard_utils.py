@@ -19,9 +19,10 @@ def plot_unitary_prices(df: pd.DataFrame, category: str):
     if df.empty:
         st.warning(f"No data for category {category}")
         return
+    df = df.groupby(['invoice_id', 'supermarket_name', 'datetime', 'description']).last().reset_index()
 
     fig = px.line(
-        df, x='datetime', y='unitary_value', color='product',
+        df, x='datetime', y='unitary_value', color='full_product_name',
         title=f"Unitary Product Prices - {category}", markers=True
     )
     fig.update_layout(xaxis_title="Date", yaxis_title="Unitary Value (Price)")
@@ -36,6 +37,23 @@ def plot_total_spend(df: pd.DataFrame, group_col: str, title: str):
     fig.update_layout(xaxis_title=group_col.capitalize(), yaxis_title="Total Spend")
     st.plotly_chart(fig, use_container_width=True)
 
+def plot_monthly_spend(df: pd.DataFrame):
+    """Plots monthly spend per supermarket."""
+    df['month'] = df['datetime'].dt.strftime('%B')
+    group_df = df.groupby(['month', 'supermarket_name'])['total_value'].sum().reset_index()
+
+    fig = px.bar(
+        group_df,
+        x='month',
+        y='total_value',
+        color='supermarket_name',
+        barmode='group',
+        title="Monthly Spend by Supermarket",
+        text_auto=True
+    )
+    fig.update_layout(xaxis_title="Month", yaxis_title="Total Spend")
+    st.plotly_chart(fig, use_container_width=True)
+
 def plot_price_comparison(df: pd.DataFrame, product: str):
     """Plots price comparison of a product across supermarkets."""
     if df.empty:
@@ -47,4 +65,39 @@ def plot_price_comparison(df: pd.DataFrame, product: str):
         title=f"Unitary Price Comparison - {product}", markers=True
     )
     fig.update_layout(xaxis_title="Date", yaxis_title="Unitary Value (Price)")
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_price_comparison_by_month(df: pd.DataFrame):
+    """Plots unit price per product per month, colored by supermarket."""
+    # Ensure datetime is in datetime format
+    df['month'] = df['datetime'].dt.strftime('%b')  # Short month name like 'Jan'
+
+    # Create combined label for x-axis: Month + Product
+    df['month_product'] = df['month'] + ' - ' + df['full_product_name']
+
+    # Group to get latest price per month-product-supermarket
+    group_df = (
+        df.groupby(['month_product', 'month', 'full_product_name', 'supermarket_name'])['unitary_value']
+        .last()
+        .reset_index()
+    )
+
+    fig = px.bar(
+        group_df,
+        x='month_product',
+        y='unitary_value',
+        color='supermarket_name',
+        barmode='group',
+        title="Monthly Price Comparison by Product and Supermarket",
+        text_auto=True
+    )
+
+    fig.update_layout(
+        xaxis_title="Month - Product",
+        yaxis_title="Unit Price",
+        xaxis_tickangle=45,
+        height=600
+    )
+
     st.plotly_chart(fig, use_container_width=True)
