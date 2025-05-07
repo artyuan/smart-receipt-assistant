@@ -25,17 +25,18 @@ invoice_prompt = """
         - Números (quantidades, valores) **sem aspas**.
         - Se o volume não existir, use `NULL` (sem aspas).
 
-        **Saída esperada**
+        **Saída esperada - exemplos abaixos são usados apenas para demonstração, valores são ficticios**
+        
         **Exemplo 1**
         INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, full_product_name, volume, category) VALUES
-        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'LTE ITALAC ZERO 1L',3.00, 'Un', 5.89, 17.60, 'Leite', 'Leite Italac,'1L', 'Laticínios'),
-        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'P QJ SIBERI 1kg TRAD',1.00, 'PC', 14.10, 14.10, 'Pão de Queijo', 'Pão de Queijo Siberi','1KG', 'Padaria e Confeitaria'),
-        (35250447508411271427651040001883521912124444,ASSAI ATACADISTA,01/01/2023,'SASSAMI SADIA 1kg',4.00, 'PC', 20.90, 83.60, 'Frango', 'Frango Sadia','1KG', 'Carnes e Aves');
+        (35250447508411271427651040001883521912124444,SuperNova Alimentos,01/01/2023,'LTE ITALAC ZERO 1L',3.00, 'Un', 5.89, 17.60, 'Leite', 'Leite Italac,'1L', 'Laticínios'),
+        (35250447508411271427651040001883521912124444,SuperNova Alimentos,01/01/2023,'P QJ SIBERI 1kg TRAD',1.00, 'PC', 14.10, 14.10, 'Pão de Queijo', 'Pão de Queijo Siberi','1KG', 'Padaria e Confeitaria'),
+        (35250447508411271427651040001883521912124444,SuperNova Alimentos,01/01/2023,'SASSAMI SADIA 1kg',4.00, 'PC', 20.90, 83.60, 'Frango', 'Frango Sadia','1KG', 'Carnes e Aves');
         
         **Exemplo 2**
         INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, full_product_name, volume, category) VALUES
-        (35250447508411271427651040001874681561004444,CIA BRASILEIRA DE DISTRIBUICAO,01/03/2025,'CERV BLUE MOON 350ML',1.00, 'Un', 8.99, 8.99, 'Cerveja', 'Cerveja Blue Moon','350ML', 'Bebidas'),
-        (35250447508411271427651040001874681561004444,CIA BRASILEIRA DE DISTRIBUICAO,01/03/2025,'ORFEU TM INT 250G ',1.00, 'Un', 38.99, 38.99, 'Cafe', 'Cafe Orfeu','250G', 'Bebidas');
+        (35250447508411271427651040001874681561004444,VivaBem Supermarket,01/03/2025,'CERV BLUE MOON 350ML',1.00, 'Un', 8.99, 8.99, 'Cerveja', 'Cerveja Blue Moon','350ML', 'Bebidas'),
+        (35250447508411271427651040001874681561004444,VivaBem Supermarket,01/03/2025,'ORFEU TM INT 250G ',1.00, 'Un', 38.99, 38.99, 'Cafe', 'Cafe Orfeu','250G', 'Bebidas');
 
     Cupom fiscal:
     {receipt}
