@@ -19,6 +19,10 @@ Get a detailed view of your spending over time. The dashboard allows you to anal
 - **Total spend** by supermarket and product category.
 - **Product price comparisons** to help you make more informed purchasing decisions.
 
+### 🧾 **Spending Reports & Smart Cart**
+- **Supermarket Spending Report**: Automatically generate a personalized report with AI to uncover trends, categories, and anomalies in your purchases.
+- **Smart Cart**: Simulate a shopping list and compare what you'd spend at each supermarket. Helps identify the most cost-effective way to shop.
+
 ## Technologies Used
 - **Streamlit**: For creating the interactive web app.
 - **Langchain & Langgraph**: For building the agent that extracts data from receipts and interacts with the database.
@@ -47,10 +51,20 @@ Make sure you have the following installed:
     poetry install
     ```
 
-3. Create a `.env` file with your PostgreSQL credentials:
+3. Create a `.env` file in the project root to store your PostgreSQL and OpenAI credentials. This file should look like:
     ```ini
-    DATABASE_URL=postgresql://username:password@localhost:5432/your_db
+    # OpenAI API Key
+    OPENAI_API_KEY=your_openai_api_key
+
+    # PostgreSQL Database Configuration
+    HOST=your_database_host
+    PORT=your_database_port
+    USER=your_database_username
+    PASSWORD=your_database_password
+    DB_NAME=your_database_name
     ```
+
+    > 💡 **Note**: Never commit your `.env` file to version control. Make sure it’s listed in your `.gitignore`.
 
 4. Run the app:
     ```bash
@@ -63,22 +77,40 @@ The app uses a PostgreSQL database to store invoice data. You can set up your da
 ### Configuration
 You can modify the app's behavior through the configuration in `market_app.py` and `src/config.py`. For example, you can change how the AI agent interacts with the data or adjust the layout of the dashboard.
 
-## Usage
+## App Pages
 
-### Page 1: Upload Your Receipt
+### 📤 Upload Receipt
 
 ![Upload Receipt Screenshot](images/upload_receipt.png)
 
 In this section, you can upload a receipt in PDF format, and the app will extract and save the details in the database. If you don't have a receipt, you can manually add purchase information.
 
-### Page 2: Supermarket Dashboard
+### 📈 Supermarket Dashboard
 
 ![Dashboard Screenshot](images/supermarket_dashboard.png)
 
 The dashboard gives you an overview of your spending, including unitary prices, total spending by supermarket, and category analysis. You can also compare prices for specific products.
 
-### Ask the Assistant
+### 🧾 Supermarket Spending Report *(New)*
+
+Generate a detailed AI-powered report on your supermarket spending habits. This report includes:
+- Total spending per supermarket
+- Product category breakdown
+- Monthly spending trends
+- Key insights and anomalies
+
+### 🛒 Smart Cart *(New)*
+
+Plan your shopping list and compare total costs at different supermarkets. Select products and quantities, and the app will:
+- Calculate total cost per supermarket
+- Suggest the cheapest combination of purchases across stores
+
+### 💬 Ask the Assistant
 
 ![Ask the Assistant Screenshot](images/chat.png)
 
 Have a question about your purchases? Just ask! The app uses a chat interface powered by Langchain to answer your questions based on the data it has extracted.
+
+---
+
+Let me know if you'd like to include a live demo link, deployment instructions, or any other enhancements!

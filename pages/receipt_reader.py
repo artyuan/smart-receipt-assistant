@@ -1,6 +1,6 @@
 import streamlit as st
 from src.database import insert_sql_query
-from src.invoice_agent import build_graph
+from agents.invoice_agent import build_graph
 from datetime import datetime
 from langchain_core.messages import HumanMessage
 

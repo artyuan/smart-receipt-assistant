@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "smart-receipt-assistant"
-version = "0.2.0"
+version = "0.3.0"
 description = "A Streamlit app to upload and analyze supermarket invoices with a dashboard for spending insights."
 authors = ["Arthur Yuan"]
 license = "MIT"
