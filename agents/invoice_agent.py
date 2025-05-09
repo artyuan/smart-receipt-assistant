@@ -1,6 +1,5 @@
 from langgraph.graph import StateGraph, START, END
 from typing_extensions import TypedDict
-from typing import Annotated
 from src.receipt_processing import process_pdf, extract_receipt_data
 from src.sql_query import write_query, execute_query, generate_answer
 from src.database import insert_sql_query
