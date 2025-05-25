@@ -28,7 +28,7 @@ selected_products = st.multiselect("Choose products to add to your cart:", uniqu
 
 user_cart = []
 for product in selected_products:
-    quantity = st.number_input(f"Quantity for {product}:", min_value=0.0, step=0.01, key=product)
+    quantity = st.sidebar.number_input(f"Quantity for {product}:", min_value=1.0, step=0.5, key=product)
     if quantity > 0:
         user_cart.append({"full_product_name": product, "quantity": quantity})
 
@@ -44,10 +44,24 @@ if user_cart:
 
     # Calculate total per supermarket
     merged['estimated_cost'] = merged['quantity'] * merged['unitary_value']
-    summary = merged.groupby('supermarket_name')['estimated_cost'].sum().sort_values().reset_index()
+
+    SUMMARY = ['SUMMARY']
+    supermarket_names = sorted([str(cat) for cat in df['supermarket_name'].dropna().unique()])
+    supermarket_names = supermarket_names + SUMMARY
 
     st.subheader("💰 Total Cost Per Supermarket")
-    st.dataframe(summary)
+    tabs = st.tabs(supermarket_names)
+    for tab, name in zip(tabs, supermarket_names):
+        with (tab):
+            if name == 'SUMMARY':
+                summary = merged.groupby('supermarket_name')['estimated_cost'].sum().sort_values().reset_index()
+                st.dataframe(summary)
+            else:
+                shopping_list = merged[merged['supermarket_name'] == name]
+                total_cost = shopping_list['estimated_cost'].sum()
+                st.dataframe(shopping_list)
+                st.success(
+                    f"🟢 Total if you buy at {name}: R$ {total_cost:.2f}")
 
     # Find best price per item regardless of market
     cheapest_total = (
