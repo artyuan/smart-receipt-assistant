@@ -37,23 +37,25 @@ with st.form("add_purchase_form"):
         invoice_id = st.text_input("Invoice ID")
         description = st.text_input("Description")
         quantity = st.number_input("Quantity", min_value=0.0, format="%.2f")
-        unit = st.text_input("Unit (e.g., kg, l, pcs)")
+        category = st.text_input("Category")
 
     with col2:
         supermarket_name = st.text_input("Supermarket Name")
-        product = st.text_input("Product")
+        product = st.text_input("Product Type")
         unitary_value = st.number_input("Unitary Value", min_value=0.0, format="%.2f")
-        volume = st.text_input("Volume (optional)")
+        unit = st.text_input("Unit (e.g., kg, l, pcs)")
 
     with col3:
         date = st.date_input("Date", value=datetime.today())
-        category = st.text_input("Category")
+        full_product_name = st.text_input("Product Name")
         total_value = st.number_input("Total Value", min_value=0.0, format="%.2f")
+        volume = st.text_input("Volume (optional)")
+
 
 
     query = f"""
-    INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, volume, category) VALUES
-    ({invoice_id},'{supermarket_name}', '{date}', '{description}', '{quantity}', '{unit}', {unitary_value}, {total_value}, '{product}', '{volume}', '{category}');
+    INSERT INTO invoices (invoice_id, supermarket_name, datetime, description, quantity, unit, unitary_value, total_value, product, full_product_name, volume, category) VALUES
+    ('{invoice_id}','{supermarket_name}', '{date}', '{description}', '{quantity}', '{unit}', {unitary_value}, {total_value}, '{product}', '{full_product_name}', '{volume}', '{category}');
     """
 
     submitted = st.form_submit_button("Save Purchase")
