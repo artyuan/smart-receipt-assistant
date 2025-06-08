@@ -4,6 +4,8 @@ from src.receipt_processing import process_pdf, extract_receipt_data
 from src.sql_query import write_query, execute_query, generate_answer
 from src.database import insert_sql_query
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.types import interrupt, Command
+from typing import Literal
 
 class GraphState(TypedDict):
     path: str
@@ -45,11 +47,25 @@ def execute_query_node(state: GraphState) -> GraphState:
 def generate_answer_node(state: GraphState) -> GraphState:
     return {"answer": generate_answer(state["question"], state["query"], state["result"])}
 
+def human_approval(state: GraphState) -> Command[Literal["insert_data", END]]:
+    is_approved = interrupt(
+        {
+            "question": "Is this correct?",
+            "llm_output": state["result"]
+        }
+    )
+
+    if is_approved:
+        return Command(goto="insert_data")
+    else:
+        return Command(goto=END)
+
 def build_graph():
     workflow = StateGraph(GraphState)
     workflow.add_node("router", router)
     workflow.add_node("process_pdf_receipt", process_pdf_node)
     workflow.add_node("extract_data", extract_data_node)
+    workflow.add_node("human_approval", human_approval)
     workflow.add_node("insert_data", insert_data_node)
     workflow.add_node("write_query", write_query_node)
     workflow.add_node("execute_query", execute_query_node)
@@ -58,7 +74,8 @@ def build_graph():
     workflow.add_edge(START, "router")
     workflow.add_conditional_edges("router", check_condition)
     workflow.add_edge("process_pdf_receipt", "extract_data")
-    workflow.add_edge("extract_data", "insert_data")
+    workflow.add_edge("extract_data", "human_approval")
+    # workflow.add_edge("extract_data", "insert_data")
     workflow.add_edge("insert_data", END)
     workflow.add_edge("write_query", "execute_query")
     workflow.add_edge("execute_query", "generate_answer")
