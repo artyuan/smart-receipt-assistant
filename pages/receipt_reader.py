@@ -3,6 +3,7 @@ from src.database import insert_sql_query
 from agents.invoice_agent import build_graph
 from datetime import datetime
 from langchain_core.messages import HumanMessage
+from langgraph.types import Command
 
 st.title("🛒 Smart Receipt Assistant")
 st.divider()
@@ -24,7 +25,10 @@ if uploaded_file:
 
     with st.spinner("Processing your receipt..."):
         result = graph.invoke({"path": path}, config=config)
-        st.success("✅ Receipt processed and saved successfully!")
+        st.write(result['result'])
+        if st.button("Save"):
+            result = graph.invoke(Command(resume=True), config=config)
+            st.success("✅ Receipt processed and saved successfully!")
 
 # --- Feature 2: Add Purchase Details Manually ---
 st.divider()
